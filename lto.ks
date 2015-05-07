@@ -48,8 +48,6 @@ WHEN ALTITUDE > 5000 THEN {
 }
 
 UNTIL ALT:APOAPSIS > target_altitude {
-	//PRINT "Apoapsis: " + ALT:APOAPSIS.
-	//PRINT "altitude: " + altitude.
     SET dt TO TIME:SECONDS - t0.
 	
 	// PID-Loop
@@ -62,12 +60,12 @@ UNTIL ALT:APOAPSIS > target_altitude {
 		SET t0 TO TIME:SECONDS.
     }	
 	
-	IF ALTITUDE > 5000 
+	IF ALTITUDE > 1000 
 	{
 		IF (ALTITUDE < 60000)
 		{
-			SAS OFF.
-			LOCK STEERING TO direction+R(0,-70*(ALTITUDE-5000)/(60000-5000),0).
+			SET SASMODE TO "STABILITYASSIST".
+			LOCK STEERING TO direction+R(0,-70*(ALTITUDE-1000)/(60000-1000),0).
 		}
 		ELSE
 		{
@@ -85,24 +83,6 @@ UNTIL ALT:APOAPSIS > target_altitude {
 		HUDTEXT("Ignition!", 2, 2, 50, green, false).		
 		SET fuel0 TO STAGE:LIQUIDFUEL.			
 	}
-	//IF TIME:SECONDS - t0p > 0.5
-	//{
-		//SET dfuel TO STAGE:LIQUIDFUEL - fuel0.
-		
-		//IF dfuel < 0 {
-			//SET fuel0 TO STAGE:LIQUIDFUEL.			
-		//}
-		//ELSE {
-			//HUDTEXT("Staging", 2, 2, 50, green, false).
-			//STAGE.
-			//WAIT 0.5.
-			//STAGE.
-			//HUDTEXT("Ignition!", 2, 2, 50, green, false).		
-			//SET fuel0 TO STAGE:LIQUIDFUEL.			
-		//}
-		
-		//SET t0p TO TIME:SECONDS.
-	//}
 		
     WAIT UNTIL TRUE.
 }
@@ -116,11 +96,6 @@ WAIT UNTIL ALTITUDE > 70000.
 PANELS ON.
 
 run cap.
-
-SET SHIP:CONTROL:PILOTMAINTHROTTLE TO 0.
-
-HUDTEXT("Waiting until circularization burn!", 2, 2, 50, green, false).
-
 run xnd.
 
 
